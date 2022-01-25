@@ -26,6 +26,10 @@ public class SpiderConfig {
     static {
         PROPERTIES = new Properties();
         load("spider.properties");
+        String targetIds = System.getProperty("targetIds");
+        if (targetIds != null && targetIds.length() > 0) {
+            PROPERTIES.setProperty("targetIds", targetIds);
+        }
         System.out.println(PROPERTIES);
         initPool();
     }
@@ -106,10 +110,7 @@ public class SpiderConfig {
     }
 
     public static void shutdown() {
-        if (pool != null) {
-            if (pool.isShutdown()) {
-                return;
-            }
+        if (pool != null && !pool.isShutdown()) {
             pool.shutdown();
         }
     }
