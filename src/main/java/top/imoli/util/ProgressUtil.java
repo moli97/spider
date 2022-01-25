@@ -42,7 +42,7 @@ public class ProgressUtil {
         if (ASYNC) {
             System.out.println();
         } else {
-            for (int i = maxIndex + length + 3; i > 0; i--) {
+            for (int i = maxIndex + length + 10; i > 0; i--) {
                 System.out.print('\b');
             }
         }
