@@ -26,6 +26,7 @@ public class SpiderConfig {
     static {
         PROPERTIES = new Properties();
         load("spider.properties");
+        System.out.println(PROPERTIES);
         initPool();
     }
 
@@ -44,11 +45,11 @@ public class SpiderConfig {
                     is.close();
                 } catch (FileNotFoundException e) {
                     System.out.println(e.getMessage());
+                    is = new FileInputStream(System.getProperty("user.home") + "/spider/spider.properties");
+                    PROPERTIES.load(is);
+                    is.close();
                 }
             }
-            is = new FileInputStream(System.getProperty("user.home") + "/spider/spider.properties");
-            PROPERTIES.load(is);
-            is.close();
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
