@@ -10,6 +10,7 @@ import top.imoli.spider.Replace;
 
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author moli@hulai.com
@@ -20,12 +21,12 @@ public class ChapterTask implements Runnable {
 
     private final Chapter chapter;
     private final CountDownLatch downLatch;
-    private final int total;
+    private final AtomicInteger progress;
 
-    public ChapterTask(Chapter chapter, CountDownLatch downLatch, int total) {
+    public ChapterTask(Chapter chapter, CountDownLatch downLatch,  AtomicInteger progress) {
         this.chapter = chapter;
         this.downLatch = downLatch;
-        this.total = total;
+        this.progress = progress;
     }
 
     @Override
@@ -38,20 +39,13 @@ public class ChapterTask implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            print(downLatch.getCount());
+            progress.incrementAndGet();
             downLatch.countDown();
         }
     }
 
-    private void print(long count) {
-        if (count % 100 == 0) {
-            System.out.print("\n" + String.format("进度: %s ", (total - count) * 100 / total) + "%");
-        }
-        System.out.print("#");
-    }
-
     private String getText(Element parentElement) {
-        StringBuilder working = new StringBuilder();
+        StringBuilder working = new StringBuilder("  ");
         for (Node child : parentElement.childNodes()) {
             if (child instanceof TextNode) {
                 working.append(((TextNode) child).text());
@@ -59,7 +53,7 @@ public class ChapterTask implements Runnable {
             if (child instanceof Element) {
                 Element childElement = (Element) child;
                 if (childElement.tag().getName().equalsIgnoreCase("br")) {
-                    working.append("\n");
+                    working.append("\n  ");
                 }
                 working.append(getText(childElement));
             }

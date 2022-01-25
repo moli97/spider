@@ -22,7 +22,6 @@ public class Replace {
 
     static {
         list.add(new Replace("一秒记住【笔趣看 www.biqukan.cc】，精彩小说无弹窗免费阅读！"));
-        list.add(new Replace("\\s{2,}", "\n"));
     }
 
     public static String handle(String text) {
