@@ -1,9 +1,7 @@
 package top.imoli.spider;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Properties;
@@ -35,23 +33,15 @@ public class SpiderConfig {
     }
 
     static void load(String config) {
-        InputStream is = ClassLoader.getSystemResourceAsStream(config);
         try {
-            PROPERTIES.load(is);
-            if (is != null) {
-                is.close();
-            }
+            load(ClassLoader.getSystemResourceAsStream(config));
             String configFile = PROPERTIES.getProperty("configFile");
             if (configFile != null && configFile.length() > 0) {
                 try {
-                    is = new FileInputStream(configFile);
-                    PROPERTIES.load(is);
-                    is.close();
+                    load(new FileInputStream(configFile));
                 } catch (FileNotFoundException e) {
                     System.out.println(e.getMessage());
-                    is = new FileInputStream(System.getProperty("user.home") + "/spider/spider.properties");
-                    PROPERTIES.load(is);
-                    is.close();
+                    load(new FileInputStream(System.getProperty("user.home") + "/spider/spider.properties"));
                 }
             }
         } catch (IOException e) {
@@ -59,10 +49,18 @@ public class SpiderConfig {
         }
     }
 
+    private static void load(InputStream is) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+        PROPERTIES.load(reader);
+        reader.close();
+        is.close();
+    }
+
     static void initPool() {
         int threads = getThreads();
         int processors = Runtime.getRuntime().availableProcessors();
-        if (threads < processors || threads > processors * 4) {
+        boolean force = isForceThreads();
+        if (!force && (threads < processors || threads > processors * 4)) {
             threads = processors * 2;
         }
         pool = Executors.newFixedThreadPool(threads);
@@ -82,6 +80,11 @@ public class SpiderConfig {
 
     public static boolean isAsync() {
         String async = getProperty("async", "false");
+        return Boolean.parseBoolean(async);
+    }
+
+    public static boolean isForceThreads() {
+        String async = getProperty("forceThreads", "false");
         return Boolean.parseBoolean(async);
     }
 
