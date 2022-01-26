@@ -115,7 +115,7 @@ public class SpiderConfig {
             String url = urls[i];
             String tasks = taskGroup[i];
             if (tasks.length() == 0) {
-                //continue;
+                continue;
             }
             String[] split = tasks.split(",");
             Set<String> collect = Arrays.stream(split).map(id -> URLUtil.format(url + "/" + id + "/")).collect(Collectors.toSet());
