@@ -1,4 +1,6 @@
-package top.imoli.spider;
+package top.imoli.spider.config;
+
+import top.imoli.util.UrlUtil;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -100,7 +102,7 @@ public class SpiderConfig {
         String targetIds = getProperty("targetIds", "");
         String[] split = targetIds.split(",");
         String prefix = getPrefixUrl();
-        return Arrays.stream(split).map(id -> prefix + "/" + id + "/").collect(Collectors.toSet());
+        return Arrays.stream(split).map(id -> UrlUtil.format(prefix + "/" + id + "/")).collect(Collectors.toSet());
     }
 
     private static int getThreads() {

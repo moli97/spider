@@ -1,6 +1,8 @@
 package top.imoli.spider;
 
 
+import top.imoli.spider.config.SpiderConfig;
+import top.imoli.spider.entity.Book;
 import top.imoli.spider.task.BookTask;
 
 import java.text.SimpleDateFormat;

@@ -2,16 +2,17 @@ package top.imoli.spider.task;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import top.imoli.spider.Book;
-import top.imoli.spider.Chapter;
-import top.imoli.spider.SpiderConfig;
+import top.imoli.spider.config.SpiderConfig;
+import top.imoli.spider.entity.Book;
+import top.imoli.spider.entity.Chapter;
+import top.imoli.spider.parser.Parser;
+import top.imoli.spider.parser.ParserType;
 import top.imoli.util.ProgressUtil;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Objects;
-import java.util.concurrent.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -19,7 +20,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @date 2022/1/24 5:54 PM
  */
 public class BookTask implements Runnable {
-
 
     private final String bookUrl;
     private final Book book;
@@ -38,27 +38,23 @@ public class BookTask implements Runnable {
         try {
             System.out.println("正在解析url: " + bookUrl);
             Document doc = Jsoup.connect(bookUrl).get();
-            String name = Objects.requireNonNull(doc.selectFirst("#info > h1")).text();
-            String author = Objects.requireNonNull(doc.selectFirst("#info > p > a")).text();
-            this.book.setName(name);
-            this.book.setAuthor(author);
-            System.out.println("小说名: 《" + name + "》\t 作者: " + author);
-            for (Element element : doc.select(".mulu_list > li > a")) {
-                this.book.addList(new Chapter(element.text(), bookUrl + element.attr("href")));
-            }
-            int total = this.book.getList().size();
+            Parser parser = ParserType.getParser(bookUrl);
+            parser.bookParser(doc, book);
+            String bookName = book.getName();
+            System.out.println("小说名: 《" + bookName + "》\t 作者: " + book.getAuthor());
+            int total = book.getList().size();
             CountDownLatch downLatch = new CountDownLatch(total);
             Executor pool = SpiderConfig.getPool();
             AtomicInteger progress = new AtomicInteger();
-            ProgressUtil.print(name, "下载中: ", total, progress);
-            for (Chapter chapter : this.book.getList()) {
-                pool.execute(new ChapterTask(chapter, downLatch, progress));
+            ProgressUtil.print(bookName, "下载中: ", total, progress);
+            for (Chapter chapter : book.getList()) {
+                pool.execute(new ChapterTask(chapter, downLatch, progress, parser));
             }
             downLatch.await();
             Thread.sleep(200);
-            System.out.println("小说名: 《" + name + "》" + "爬取完成");
-            String filePath = String.format(SpiderConfig.getSaveFormat(), this.book.getName(), this.book.getAuthor());
-            saveAsFileWriter(filePath, this.book.toText());
+            System.out.println("小说名: 《" + bookName + "》" + "爬取完成");
+            String filePath = String.format(SpiderConfig.getSaveFormat(), bookName, book.getAuthor());
+            saveAsFileWriter(filePath, book.toText());
         } catch (Exception e) {
             e.printStackTrace();
         }

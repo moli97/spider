@@ -1,4 +1,4 @@
-package top.imoli.spider;
+package top.imoli.spider.entity;
 
 /**
  * @author moli@hulai.com

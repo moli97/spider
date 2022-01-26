@@ -1,6 +1,6 @@
 package top.imoli.util;
 
-import top.imoli.spider.SpiderConfig;
+import top.imoli.spider.config.SpiderConfig;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

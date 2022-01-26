@@ -1,4 +1,4 @@
-package top.imoli.spider;
+package top.imoli.spider.entity;
 
 import java.util.ArrayList;
 import java.util.List;
