@@ -31,7 +31,7 @@ public class Bige7Parser extends AbstractParser {
 
     @Override
     public Elements chapterList(Document doc) {
-        return doc.selectFirst(".listmain > dl").select("dd:not(.more) > a");
+        return Objects.requireNonNull(doc.selectFirst(".listmain > dl")).select("dd:not(.more) > a");
     }
 
     @Override

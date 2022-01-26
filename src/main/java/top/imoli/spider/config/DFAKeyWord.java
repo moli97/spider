@@ -10,7 +10,7 @@ import java.util.Map;
 public class DFAKeyWord implements KeyWord {
 
 	/** 子节点列表，Map的key是子节点对应的字符 **/
-	private final Map<Character, DFAKeyWord> childs = new HashMap<>();
+	private final Map<Character, DFAKeyWord> child = new HashMap<>();
 	/** 要替换的旧字符串 **/
 	private String oldWord;
 	/** 新字符串 **/
@@ -23,9 +23,6 @@ public class DFAKeyWord implements KeyWord {
 
 	/***
 	 * 判断某个字符是否是汉字 汉字字符对应的 int 值为 从 19968 到 171941 （包括19968和171941）
-	 * 
-	 * @param c
-	 * @return
 	 */
 	private static boolean isChineseCharacter(char c) {
 		return (19968 <= c) && (c <= 171941);
@@ -38,12 +35,12 @@ public class DFAKeyWord implements KeyWord {
 	@Override
 	public void initKeyWord(String keyWords) {
 		String[] s = StringUtils.split(keyWords, "|");
-		for (int i = 0; i < s.length; ++i) {
+		for (String value : s) {
 			StringBuilder sb = new StringBuilder();
-			for (int j = 0; j < s[i].length(); ++j) {
+			for (int j = 0; j < value.length(); ++j) {
 				sb.append("*");
 			}
-			add(s[i], sb.toString());
+			add(value, sb.toString());
 		}
 	}
 
@@ -99,10 +96,10 @@ public class DFAKeyWord implements KeyWord {
 
 		// 建立一个字节点
 		char next_ch = oldWords.charAt(idx);
-		DFAKeyWord ti = childs.get(next_ch);
+		DFAKeyWord ti = child.get(next_ch);
 		if (ti == null) {
 			ti = new DFAKeyWord(this.chinese);
-			childs.put(next_ch, ti);
+			child.put(next_ch, ti);
 		}
 
 		// 递归建立下一个字节点
@@ -114,7 +111,7 @@ public class DFAKeyWord implements KeyWord {
 	 */
 	private FindResultPosInfo compareWords(String s, int idx, int ignoreCount, int deep) {
 		// 找到匹配节点，并且该节点没有子节点（满足此条件是为了最长匹配）时，直接返回当前位置
-		if (this.oldWord != null && this.childs.size() == 0) {
+		if (this.oldWord != null && this.child.size() == 0) {
 			final int n = this.oldWord.length() + ignoreCount;
 			return new FindResultPosInfo(this, idx - n, n);
 		}
@@ -126,19 +123,17 @@ public class DFAKeyWord implements KeyWord {
 		// 查找匹配的字节点
 		char c = s.charAt(idx);
 		if (this.chinese && deep > 0 && isIgnoreCharacter(c)) {
-			if (deep > 0) {
-				int i = 0;
-				for (; isIgnoreCharacter(c) && idx + i < s.length(); ++i)
-					c = s.charAt(idx + i);
-				if (i > 0) {
-					--i;
-					idx += i;
-					ignoreCount += i;
-				}
+			int i = 0;
+			for (; isIgnoreCharacter(c) && idx + i < s.length(); ++i)
+				c = s.charAt(idx + i);
+			if (i > 0) {
+				--i;
+				idx += i;
+				ignoreCount += i;
 			}
 			// System.out.println(c);
 		}
-		DFAKeyWord ti = childs.get(c);
+		DFAKeyWord ti = child.get(c);
 		if (ti == null)
 			return null;
 
@@ -192,7 +187,6 @@ public class DFAKeyWord implements KeyWord {
 	 * 检查字符串中是否存在需要替换的关键字
 	 * 
 	 * @param s 要检查的字符串
-	 * @return
 	 */
 	@Override
 	public boolean exist(String s) {
@@ -209,9 +203,9 @@ public class DFAKeyWord implements KeyWord {
 		FindResultPosInfo wi = findWords(s, 0); // 查找第一个替换的位置
 		if (wi == null)
 			return 0;
-		int writen = 0;
+		int writen;
 		int count = 0;
-		for (; wi != null && wi.idx < s.length();) {
+		while (wi != null && wi.idx < s.length()) {
 			++count;
 			writen = wi.idx + wi.length;
 			wi = findWords(s, writen); // 查找下一个替换位置
@@ -223,7 +217,6 @@ public class DFAKeyWord implements KeyWord {
 	 * 替换字符串中的旧字符串
 	 * 
 	 * @param s 要替换的字符串
-	 * @return
 	 */
 	@Override
 	public String replace(String s) {
@@ -232,7 +225,7 @@ public class DFAKeyWord implements KeyWord {
 			return s;
 		StringBuilder sb = new StringBuilder(s.length());
 		int writen = 0;
-		for (; wi != null && wi.idx < s.length();) {
+		while (wi != null && wi.idx < s.length()) {
 			sb.append(s, writen, wi.idx); // append 原字符串不需替换部分
 			sb.append(wi.msr.newWord); // append 新字符串
 			writen = wi.idx + wi.length; // 忽略原字符串需要替换部分
@@ -245,7 +238,7 @@ public class DFAKeyWord implements KeyWord {
 	public static void main(String[] argv) {
 		DFAKeyWord m = new DFAKeyWord(true);
 		m.add("习近平", "**");
-		String message = "啊啊啊习aaaaa近addd平啊啊啊啊啊";
+		String message = "啊啊啊习array近added平啊啊啊啊啊";
 		System.out.println(message);
 		System.out.println(m.replace(message));
 	}

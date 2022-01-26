@@ -24,7 +24,7 @@ public enum ParserType {
         return factory.newParser(baseUrl);
     }
 
-    private static Map<String, Parser> cache = new HashMap<>();
+    private static final Map<String, Parser> cache = new HashMap<>();
 
     public static Parser getParser(String url) {
         if (cache.containsKey(url)) {
