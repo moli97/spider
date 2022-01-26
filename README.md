@@ -1,11 +1,18 @@
 # spider
 
 #### 介绍
-笔趣阁(类笔趣阁)java爬虫
+笔趣阁(类笔趣阁)java爬虫,多线程
 
 #### 软件架构
 jsoup
 
+## Features
+- [x] 多线程支持
+- [ ] 根据书名搜索下载 
+- [ ] 分布式运行
+- [ ] Docker 支持
+- [ ] Web 管理页面
+- [ ] 代理池支持 ([pyproxy-async](https://github.com/pjialin/pyproxy-async))
 
 #### 安装教程
 
