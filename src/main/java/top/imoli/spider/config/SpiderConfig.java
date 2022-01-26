@@ -17,6 +17,7 @@ public class SpiderConfig {
 
     private static final Properties PROPERTIES;
     private static ExecutorService pool;
+    private static final KeyWord KEY_WORD = new DFAKeyWord(true);
 
     private SpiderConfig() {
     }
@@ -34,18 +35,23 @@ public class SpiderConfig {
         });
         System.out.println(PROPERTIES);
         initPool();
+        initKeyWord();
+    }
+
+    private static void initKeyWord() {
+        KEY_WORD.initKeyWord(getProperty(Constant.IGNORE_ERROR_KEY, ""));
     }
 
     static void load(String config) {
         try {
             load(ClassLoader.getSystemResourceAsStream(config));
-            String configFile = PROPERTIES.getProperty("configFile");
+            String configFile = PROPERTIES.getProperty(Constant.CONFIG_FILE);
             if (configFile != null && configFile.length() > 0) {
                 try {
                     load(new FileInputStream(configFile));
                 } catch (FileNotFoundException e) {
                     System.out.println(e.getMessage());
-                    load(new FileInputStream(System.getProperty("user.home") + "/spider/spider.properties"));
+                    load(new FileInputStream(System.getProperty(Constant.USER_HOME) + "/spider/spider.properties"));
                 }
             }
         } catch (IOException e) {
@@ -79,33 +85,33 @@ public class SpiderConfig {
     }
 
     public static String getSaveFormat() {
-        return getProperty("savePath", System.getProperties().getProperty("user.home")) + "/" + getFormat();
+        return getProperty(Constant.SAVE_PATH, System.getProperties().getProperty(Constant.USER_HOME)) + "/" + getFormat();
     }
 
     public static String getTimeFormat() {
-        return getProperty("timeFormat", "yyyy-MM-dd");
+        return getProperty(Constant.TIME_FORMAT, "yyyy-MM-dd");
     }
 
     public static boolean isAsync() {
-        String async = getProperty("async", "false");
+        String async = getProperty(Constant.ASYNC, "false");
         return Boolean.parseBoolean(async);
     }
 
     public static boolean isForceThreads() {
-        String async = getProperty("forceThreads", "false");
+        String async = getProperty(Constant.FORCE_THREADS, "false");
         return Boolean.parseBoolean(async);
     }
 
     public static String getFormat() {
-        return getProperty("format", "{name}-{author}.txt");
+        return getProperty(Constant.FORMAT, "{name}-{author}.txt");
     }
 
     public static Collection<String> getTargets() {
-        String[] urls = getProperty("taskUrls", "").split(",");
+        String[] urls = getProperty(Constant.TASK_URLS, "").split(",");
         if (urls.length == 0) {
             return Collections.emptyList();
         }
-        String[] taskGroup = getProperty("taskGroup", "").split(":");
+        String[] taskGroup = getProperty(Constant.TASK_GROUP, "").split(":");
         if (taskGroup.length == 0) {
             return Collections.emptyList();
         }
@@ -125,7 +131,7 @@ public class SpiderConfig {
     }
 
     private static int getThreads() {
-        String threads = getProperty("threads", "0");
+        String threads = getProperty(Constant.THREADS, "0");
         return Integer.parseInt(threads);
     }
 
@@ -137,5 +143,9 @@ public class SpiderConfig {
         if (pool != null && !pool.isShutdown()) {
             pool.shutdown();
         }
+    }
+
+    public static boolean isExist(String words) {
+        return KEY_WORD.exist(words);
     }
 }

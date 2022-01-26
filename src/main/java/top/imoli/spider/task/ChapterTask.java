@@ -3,6 +3,7 @@ package top.imoli.spider.task;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import top.imoli.spider.config.SpiderConfig;
 import top.imoli.spider.entity.Chapter;
 import top.imoli.spider.parser.Parser;
 
@@ -14,7 +15,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @date 2022/1/24 6:03 PM
  */
 public class ChapterTask implements Runnable {
-
 
     private final Chapter chapter;
     private final CountDownLatch downLatch;
@@ -31,10 +31,15 @@ public class ChapterTask implements Runnable {
     @Override
     public void run() {
         try {
-            Document doc = Jsoup.connect(this.chapter.getUrl()).get();
-            parser.chapterParser(doc, this.chapter);
+            Document doc = Jsoup.connect(chapter.getUrl()).get();
+            parser.chapterParser(doc, chapter);
         } catch (HttpStatusException e) {
-            System.out.println(e.getMessage());
+            if (SpiderConfig.isExist(chapter.getName())) {
+                chapter.setText("");
+            } else {
+                System.out.println(chapter.getName() + e.getMessage());
+                chapter.setText("章节错误");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
