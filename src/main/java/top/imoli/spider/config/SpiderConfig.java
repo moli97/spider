@@ -24,10 +24,14 @@ public class SpiderConfig {
     static {
         PROPERTIES = new Properties();
         load("spider.properties");
-        String targetIds = System.getProperty("taskGroup");
-        if (targetIds != null && targetIds.length() > 0) {
-            PROPERTIES.setProperty("taskGroup", targetIds);
-        }
+        PROPERTIES.keySet().forEach(key -> {
+            if (key instanceof String) {
+                String property = System.getProperty((String) key);
+                if (property != null && property.length() > 0) {
+                    PROPERTIES.setProperty((String) key, property);
+                }
+            }
+        });
         System.out.println(PROPERTIES);
         initPool();
     }
