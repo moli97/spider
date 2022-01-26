@@ -1,12 +1,10 @@
 package top.imoli.spider.config;
 
-import top.imoli.util.UrlUtil;
+import top.imoli.spider.util.URLUtil;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -80,6 +78,10 @@ public class SpiderConfig {
         return getProperty("savePath", System.getProperties().getProperty("user.home")) + "/" + getFormat();
     }
 
+    public static String getTimeFormat() {
+        return getProperty("timeFormat", "yyyy-MM-dd");
+    }
+
     public static boolean isAsync() {
         String async = getProperty("async", "false");
         return Boolean.parseBoolean(async);
@@ -91,18 +93,31 @@ public class SpiderConfig {
     }
 
     public static String getFormat() {
-        return getProperty("format", "%s-%s.txt");
-    }
-
-    public static String getPrefixUrl() {
-        return getProperty("prefixUrl", "https://www.biqukan.cc/article/");
+        return getProperty("format", "{name}-{author}.txt");
     }
 
     public static Collection<String> getTargets() {
-        String targetIds = getProperty("targetIds", "");
-        String[] split = targetIds.split(",");
-        String prefix = getPrefixUrl();
-        return Arrays.stream(split).map(id -> UrlUtil.format(prefix + "/" + id + "/")).collect(Collectors.toSet());
+        String[] urls = getProperty("taskUrls", "").split(",");
+        if (urls.length == 0) {
+            return Collections.emptyList();
+        }
+        String[] taskGroup = getProperty("taskGroup", "").split(":");
+        if (taskGroup.length == 0) {
+            return Collections.emptyList();
+        }
+        int min = Math.min(urls.length, taskGroup.length);
+        Set<String> set = new HashSet<>();
+        for (int i = 0; i < min; i++) {
+            String url = urls[i];
+            String tasks = taskGroup[i];
+            if (tasks.length() == 0) {
+                //continue;
+            }
+            String[] split = tasks.split(",");
+            Set<String> collect = Arrays.stream(split).map(id -> URLUtil.format(url + "/" + id + "/")).collect(Collectors.toSet());
+            set.addAll(collect);
+        }
+        return set;
     }
 
     private static int getThreads() {

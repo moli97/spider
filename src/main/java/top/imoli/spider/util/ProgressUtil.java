@@ -1,4 +1,4 @@
-package top.imoli.util;
+package top.imoli.spider.util;
 
 import top.imoli.spider.config.SpiderConfig;
 

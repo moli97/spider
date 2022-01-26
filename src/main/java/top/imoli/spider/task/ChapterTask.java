@@ -1,5 +1,6 @@
 package top.imoli.spider.task;
 
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import top.imoli.spider.entity.Chapter;
@@ -31,7 +32,9 @@ public class ChapterTask implements Runnable {
     public void run() {
         try {
             Document doc = Jsoup.connect(this.chapter.getUrl()).get();
-            parser.chapterParser(doc,this.chapter);
+            parser.chapterParser(doc, this.chapter);
+        } catch (HttpStatusException e) {
+            System.out.println(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

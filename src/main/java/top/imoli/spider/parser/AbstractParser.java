@@ -5,6 +5,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import top.imoli.spider.entity.Book;
 import top.imoli.spider.entity.Chapter;
+import top.imoli.spider.exception.ParserException;
 
 /**
  * @author moli@hulai.com
@@ -20,11 +21,15 @@ public abstract class AbstractParser implements Parser {
 
     @Override
     public void bookParser(Document doc, Book book) {
-        book.setName(nameParser(doc));
-        book.setAuthor(authorParser(doc));
-        for (Element element : chapterList(doc)) {
-            String href = splitJoint(book.getUrl(), baseUrl, element.attr("href"));
-            book.addList(new Chapter(element.text(), href));
+        try {
+            book.setName(nameParser(doc));
+            book.setAuthor(authorParser(doc));
+            for (Element element : chapterList(doc)) {
+                String href = splitJoint(book.getUrl(), baseUrl, element.attr("href"));
+                book.addList(new Chapter(element.text(), href));
+            }
+        } catch (Exception e) {
+            throw new ParserException(e);
         }
     }
 

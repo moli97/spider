@@ -1,13 +1,16 @@
 package top.imoli.spider.task;
 
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import top.imoli.spider.config.Format;
 import top.imoli.spider.config.SpiderConfig;
 import top.imoli.spider.entity.Book;
 import top.imoli.spider.entity.Chapter;
+import top.imoli.spider.exception.ParserException;
 import top.imoli.spider.parser.Parser;
 import top.imoli.spider.parser.ParserType;
-import top.imoli.util.ProgressUtil;
+import top.imoli.spider.util.ProgressUtil;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -54,7 +57,9 @@ public class BookTask implements Runnable {
             Thread.sleep(200);
             System.out.println("小说名: 《" + bookName + "》" + "爬取完成");
             String filePath = String.format(SpiderConfig.getSaveFormat(), bookName, book.getAuthor());
-            saveAsFileWriter(filePath, book.toText());
+            saveAsFileWriter(Format.format(bookName, book.getAuthor(), bookUrl), book.toText());
+        } catch (ParserException | HttpStatusException e) {
+            System.out.println(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
