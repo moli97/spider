@@ -24,9 +24,9 @@ public class SpiderConfig {
     static {
         PROPERTIES = new Properties();
         load("spider.properties");
-        String targetIds = System.getProperty("targetIds");
+        String targetIds = System.getProperty("taskGroup");
         if (targetIds != null && targetIds.length() > 0) {
-            PROPERTIES.setProperty("targetIds", targetIds);
+            PROPERTIES.setProperty("taskGroup", targetIds);
         }
         System.out.println(PROPERTIES);
         initPool();
