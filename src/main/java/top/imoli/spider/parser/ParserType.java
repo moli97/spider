@@ -11,6 +11,7 @@ public enum ParserType {
 
     BI_QU_KAN("https://www.biqukan.cc", BiqukanParser::new),
     BI_GE_7("https://www.bige7.com", Bige7Parser::new),
+    X_BI_QU_GE("https://www.xbiquge.la", XBiqugeParser::new),
     ;
     public final String baseUrl;
     public final ParserFactory factory;
