@@ -56,7 +56,6 @@ public class BookTask implements Runnable {
             downLatch.await();
             Thread.sleep(200);
             System.out.println("小说名: 《" + bookName + "》" + "爬取完成");
-            String filePath = String.format(SpiderConfig.getSaveFormat(), bookName, book.getAuthor());
             saveAsFileWriter(Format.format(bookName, book.getAuthor(), bookUrl), book.toText());
         } catch (ParserException | HttpStatusException e) {
             System.out.println(e.getMessage());
