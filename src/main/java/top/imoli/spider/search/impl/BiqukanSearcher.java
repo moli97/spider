@@ -3,6 +3,7 @@ package top.imoli.spider.search.impl;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import top.imoli.spider.entity.Result;
 import top.imoli.spider.entity.Search;
 import top.imoli.spider.search.AbstractSearcher;
@@ -31,18 +32,19 @@ public class BiqukanSearcher extends AbstractSearcher {
     @Override
     public void search(Search search) {
         try {
-            Document document = TryObtain.tryGet(Jsoup.connect(path)
-                    .data("searchkey", encode(search.getKeyWord()))
-                    .data("submit", "%CB%D1%CB%F7"));
-            for (Element element : document.select(".bookinfo")) {
-                String bookName = element.select(".bookname").text();
-                String href = splitJoint(element.select(".bookname > a").attr("href"));
-                String author = element.select(".author").text().replace("作者：", "");
-                search.addResult(new Result(href, bookName, author, type));
+            Document document = TryObtain.tryGet(Jsoup.connect(getUrl(search.getKeyWord())));
+            for (Element element : document.select("tbody > tr:not([align])")) {
+                Elements select = element.select(".odd");
+                rule0(search, select, baseUrl, type);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    private String getUrl(String keyWord) throws UnsupportedEncodingException {
+        return path + "?searchkey=" + encode(keyWord) + "&submit=%CB%D1%CB%F7";
     }
 
     private String encode(String s) throws UnsupportedEncodingException {
@@ -59,7 +61,7 @@ public class BiqukanSearcher extends AbstractSearcher {
         //采用utf-8字符集
         System.out.println(URLEncoder.encode("轮回乐园", "UTF-8"));
         //采用GBK字符集
-        System.out.println(URLEncoder.encode("轮回乐园", "GBK"));
-        System.out.println(URLEncoder.encode("大主宰", "GBK"));
+        System.out.println(URLEncoder.encode("诸天世界", "GBK"));
+        System.out.println(URLEncoder.encode("搜索", "GBK"));
     }
 }

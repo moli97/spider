@@ -29,12 +29,7 @@ public class XBiqugeSearcher extends AbstractSearcher {
             Document document = TryObtain.tryPost(Jsoup.connect(path).data("searchkey", search.getKeyWord()));
             for (Element element : document.select("tbody > tr:not([align])")) {
                 Elements select = element.select(".even");
-                if (select.size() >= 2) {
-                    Element e0 = select.get(0);
-                    String href = splitJoint(e0.select("a").attr("href"));
-                    String bookName = e0.text();
-                    search.addResult(new Result(href, bookName, select.get(1).text(), type));
-                }
+                rule0(search, select, baseUrl, type);
             }
         } catch (Exception e) {
             e.printStackTrace();
