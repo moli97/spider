@@ -1,6 +1,7 @@
 package top.imoli.spider.search;
 
 import top.imoli.spider.entity.Search;
+import top.imoli.spider.util.URLUtil;
 
 /**
  * @author moli@hulai.com
@@ -11,5 +12,12 @@ public interface Searcher {
     int TRY_COUNT = 5;
 
     void search(Search search);
+
+    default String splitJoint(String baseUrl, String href) {
+        if (href.startsWith("/")) {
+            return URLUtil.format(baseUrl + href);
+        }
+        return href;
+    }
 
 }

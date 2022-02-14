@@ -1,6 +1,7 @@
 package top.imoli.spider.search;
 
 import top.imoli.spider.entity.Search;
+import top.imoli.spider.search.impl.Bige7Searcher;
 import top.imoli.spider.search.impl.XBiqugeSearcher;
 
 import java.util.function.BiFunction;
@@ -11,6 +12,7 @@ import java.util.function.BiFunction;
  */
 public enum SearchType {
 
+    BI_GE_7("https://www.bige7.com/s", Bige7Searcher::new),
     X_BI_QU_GE("https://www.xbiquge.la/modules/article/waps.php", XBiqugeSearcher::new),
 //    X("test", (type, path) -> new AbstractSearcher(type, path) {
 //        @Override

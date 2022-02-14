@@ -20,6 +20,16 @@ public class URLUtil {
         return "";
     }
 
+    public static String getBaseUrl(String url) {
+        URL u = null;
+        try {
+            u = new URL(url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return u.getProtocol() + "://" + u.getHost();
+    }
+
     public static String format(String url) {
         return url.replace("//", "/").replace(":/", "://");
     }
