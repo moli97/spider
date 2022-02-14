@@ -1,6 +1,6 @@
 package top.imoli.spider.entity;
 
-import top.imoli.spider.parser.ParserType;
+import top.imoli.spider.search.SearchType;
 
 import java.util.Objects;
 
@@ -8,12 +8,14 @@ public class Result {
 
     private String url;
     private String bookName;
-    private int state;//待定
-    private ParserType type;
+    private String author;
+    private SearchType type;
 
-    public Result(String url, String bookName) {
+    public Result(String url, String bookName, String author, SearchType type) {
         this.url = url;
         this.bookName = bookName;
+        this.author = author;
+        this.type = type;
     }
 
     public String getUrl() {
@@ -42,6 +44,8 @@ public class Result {
         return "Result{" +
                 "url='" + url + '\'' +
                 ", bookName='" + bookName + '\'' +
+                ", author='" + author + '\'' +
+                ", type=" + type +
                 '}';
     }
 }

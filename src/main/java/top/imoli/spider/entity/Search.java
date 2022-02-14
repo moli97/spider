@@ -1,6 +1,8 @@
 package top.imoli.spider.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Search {
@@ -19,6 +21,10 @@ public class Search {
 
     public Set<Result> getResults() {
         return results;
+    }
+
+    public List<Result> getList() {
+        return new ArrayList<>(results);
     }
 
     public boolean addResult(Result result) {

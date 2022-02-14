@@ -1,10 +1,11 @@
-package top.imoli.spider.parser;
+package top.imoli.spider.parser.impl;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import top.imoli.spider.config.Replace;
 import top.imoli.spider.entity.Chapter;
+import top.imoli.spider.parser.AbstractParser;
 
 import java.util.Objects;
 

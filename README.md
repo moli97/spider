@@ -13,6 +13,7 @@ jsoup
 - [ ] Docker 支持
 - [ ] Web 管理页面
 - [ ] 代理池支持 ([pyproxy-async](https://github.com/pjialin/pyproxy-async))
+- [ ] 抽象解析规则,前台页面录入解析规则
 
 #### 安装教程
 

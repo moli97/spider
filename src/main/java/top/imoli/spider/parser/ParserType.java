@@ -1,5 +1,9 @@
 package top.imoli.spider.parser;
 
+import top.imoli.spider.parser.impl.Bige7Parser;
+import top.imoli.spider.parser.impl.BiqukanParser;
+import top.imoli.spider.parser.impl.XBiqugeParser;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,16 +29,16 @@ public enum ParserType {
         return factory.newParser(baseUrl);
     }
 
-    private static final Map<String, Parser> cache = new HashMap<>();
+    private static final Map<ParserType, Parser> cache = new HashMap<>();
 
     public static Parser getParser(String url) {
-        if (cache.containsKey(url)) {
-            return cache.get(url);
-        }
         for (ParserType value : values()) {
             if (url.startsWith(value.baseUrl)) {
+                if (cache.containsKey(value)) {
+                    return cache.get(value);
+                }
                 Parser newParser = value.newParser();
-                cache.put(url, newParser);
+                cache.put(value, newParser);
                 return newParser;
             }
         }
