@@ -48,7 +48,7 @@ public class SearchTask implements Runnable {
     }
 
     private static void startup() {
-        SearchTask task = new SearchTask("诸天世界");
+        SearchTask task = new SearchTask("征战诸天世界");
         task.run();
         Search search = task.getSearch();
         System.out.println("任务 " + search.getKeyWord() + " 搜索到一下结果:\n请选择下载index(逗号分隔)");

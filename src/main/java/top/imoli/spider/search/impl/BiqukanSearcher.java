@@ -6,6 +6,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import top.imoli.spider.entity.Result;
 import top.imoli.spider.entity.Search;
+import top.imoli.spider.parser.AbstractParser;
+import top.imoli.spider.parser.Parser;
+import top.imoli.spider.parser.ParserType;
 import top.imoli.spider.search.AbstractSearcher;
 import top.imoli.spider.search.SearchType;
 import top.imoli.spider.task.TryObtain;
@@ -13,6 +16,7 @@ import top.imoli.spider.task.TryObtain;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Objects;
 
 /**
  * @author moli@hulai.com
@@ -33,6 +37,9 @@ public class BiqukanSearcher extends AbstractSearcher {
     public void search(Search search) {
         try {
             Document document = TryObtain.tryGet(Jsoup.connect(getUrl(search.getKeyWord())));
+            if (pre(document, search)) {
+                return;
+            }
             for (Element element : document.select("tbody > tr:not([align])")) {
                 Elements select = element.select(".odd");
                 rule0(search, select, baseUrl, type);
@@ -41,6 +48,35 @@ public class BiqukanSearcher extends AbstractSearcher {
             e.printStackTrace();
         }
     }
+
+    private boolean pre(Document document, Search search) {
+        try {
+            String href = Objects.requireNonNull(document.selectFirst("link")).attr("href");
+            Parser parser = ParserType.getParser(href);
+            String bookName;
+            String author;
+            if (parser instanceof AbstractParser) {
+                author = ((AbstractParser) parser).authorParser(document);
+                bookName = ((AbstractParser) parser).nameParser(document);
+            } else {
+                author = Objects.requireNonNull(document.selectFirst("#info > p > a")).text();
+                bookName = Objects.requireNonNull(document.selectFirst("#info > h1")).text();
+            }
+            search.addResult(new Result(splitJoint(href), bookName, author, type));
+            return true;
+        } catch (Exception ignored) {
+        }
+        return false;
+    }
+
+    /**
+     * <meta property="og:image" content="https://www.biqukan.cc/files/article/image/40/40141/40141s.jpg">
+     * <meta property="og:novel:category" content="玄幻小说">
+     * <meta property="og:novel:author" content="明少江南">
+     * <meta property="og:novel:book_name" content="诸天世界自由行">
+     * <meta property="og:novel:read_url" content="https://www.biqukan.cc/article/40141/">
+     * <meta property="og:url" content="https://www.biqukan.cc/article/40141/">
+     */
 
 
     private String getUrl(String keyWord) throws UnsupportedEncodingException {
