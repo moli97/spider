@@ -8,39 +8,36 @@ import top.imoli.spider.entity.Result;
 import top.imoli.spider.entity.Search;
 import top.imoli.spider.search.AbstractSearcher;
 import top.imoli.spider.search.SearchType;
-
-import java.io.IOException;
+import top.imoli.spider.task.TryObtain;
 
 /**
  * @author moli@hulai.com
  * @date 2022/2/14 3:09 PM
  */
 public class XBiqugeSearcher extends AbstractSearcher {
-
+    /**
+     * https://www.xbiquge.la/modules/article/waps.php
+     * POST请求 searchkey: 诸天世界唯一玩家
+     */
     public XBiqugeSearcher(SearchType type, String path) {
         super(type, path);
     }
 
     @Override
     public void search(Search search) {
-        for (int i = 0; i < TRY_COUNT; i++) {
-            try {
-                Document post = Jsoup.connect(path)
-                        .data("searchkey", search.getKeyWord())
-                        .post();
-                for (Element element : post.select("tbody > tr:not([align])")) {
-                    Elements select = element.select(".even");
-                    if (select.size() >= 2) {
-                        Element e0 = select.get(0);
-                        String href = splitJoint(e0.select("a").attr("href"));
-                        String bookName = e0.text();
-                        search.addResult(new Result(href, bookName, select.get(1).text(), type));
-                    }
+        try {
+            Document document = TryObtain.tryPost(Jsoup.connect(path).data("searchkey", search.getKeyWord()));
+            for (Element element : document.select("tbody > tr:not([align])")) {
+                Elements select = element.select(".even");
+                if (select.size() >= 2) {
+                    Element e0 = select.get(0);
+                    String href = splitJoint(e0.select("a").attr("href"));
+                    String bookName = e0.text();
+                    search.addResult(new Result(href, bookName, select.get(1).text(), type));
                 }
-                break;
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

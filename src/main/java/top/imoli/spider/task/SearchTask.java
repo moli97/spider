@@ -56,13 +56,14 @@ public class SearchTask implements Runnable {
         for (int i = 0; i < results.size(); i++) {
             System.out.println(i + "\t" + results.get(i));
         }
-        String next = scanner.next();
-        String[] split = next.split(",");
-        for (String s : split) {
-            Result result = results.get(Integer.parseInt(s));
-            BookTask bookTask = new BookTask(result.getUrl());
-            bookTask.call();
-        }
+        //String next = scanner.next();
+        //String[] split = next.split(",");
+//        for (String s : split) {
+//            Result result = results.get(Integer.parseInt(s));
+//            BookTask bookTask = new BookTask(result.getUrl());
+//            bookTask.call();
+//        }
+        results.forEach(result -> new BookTask(result.getUrl()).call());
         System.out.println("是否结束？(Y/N)");
         if (Objects.equals("Y", scanner.next())) {
             return;

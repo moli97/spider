@@ -9,8 +9,6 @@ import top.imoli.spider.util.URLUtil;
  */
 public interface Searcher {
 
-    int TRY_COUNT = 5;
-
     void search(Search search);
 
     default String splitJoint(String baseUrl, String href) {
