@@ -51,9 +51,6 @@ public class Book {
     }
 
     public void addList(Chapter chapter) {
-        if (list.size()>50){
-            return;
-        }
         this.list.add(chapter);
     }
 
