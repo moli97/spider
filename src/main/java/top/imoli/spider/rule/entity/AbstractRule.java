@@ -64,7 +64,7 @@ public class AbstractRule<T> {
 //                .execute()
 //                .body();
 
-        //TODO 行为树 ？ 状态机 ？解释器模式 ？ 责任链 ？
+        //TODO 行为树 ？ 状态机 ？解释器模式 ？ 责任链 ？AST（抽象语法树）？
         AbstractRule<String> rule = new AbstractRule<String>() {
 
         };
