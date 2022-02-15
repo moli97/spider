@@ -26,7 +26,7 @@ public enum ParserType {
     }
 
     private Parser newParser() {
-        return factory.newParser(baseUrl);
+        return factory.newParser();
     }
 
     private static final Map<ParserType, Parser> cache = new HashMap<>();
@@ -46,6 +46,6 @@ public enum ParserType {
     }
 
     interface ParserFactory {
-        Parser newParser(String url);
+        Parser newParser();
     }
 }

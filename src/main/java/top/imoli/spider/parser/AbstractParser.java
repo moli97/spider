@@ -13,19 +13,13 @@ import top.imoli.spider.exception.ParserException;
  */
 public abstract class AbstractParser implements Parser {
 
-    protected final String baseUrl;
-
-    public AbstractParser(String baseUrl) {
-        this.baseUrl = baseUrl;
-    }
-
     @Override
     public void bookParser(Document doc, Book book) {
         try {
             book.setName(nameParser(doc));
             book.setAuthor(authorParser(doc));
             for (Element element : chapterList(doc)) {
-                String href = splitJoint(book.getUrl(), baseUrl, element.attr("href"));
+                String href = element.attr("abs:href");
                 book.addList(new Chapter(element.text(), href));
             }
         } catch (Exception e) {

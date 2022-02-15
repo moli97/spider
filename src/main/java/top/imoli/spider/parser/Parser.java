@@ -6,7 +6,6 @@ import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import top.imoli.spider.entity.Book;
 import top.imoli.spider.entity.Chapter;
-import top.imoli.spider.util.URLUtil;
 
 /**
  * @author moli@hulai.com
@@ -38,10 +37,4 @@ public interface Parser {
         return working.toString();
     }
 
-    default String splitJoint(String bookUrl, String baseUrl, String href) {
-        if (href.startsWith("/")) {
-            return URLUtil.format(baseUrl + href);
-        }
-        return URLUtil.format(bookUrl + "/" + href);
-    }
 }

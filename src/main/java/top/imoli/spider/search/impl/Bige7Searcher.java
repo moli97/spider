@@ -28,7 +28,7 @@ public class Bige7Searcher extends AbstractSearcher {
             Document document = TryObtain.tryGet(Jsoup.connect(path).data("q", search.getKeyWord()));
             for (Element element : document.select(".bookinfo")) {
                 String bookName = element.select(".bookname").text();
-                String href = splitJoint(element.select(".bookname > a").attr("href"));
+                String href = element.select(".bookname > a").attr("abs:href");
                 String author = element.select(".author").text().replace("作者：", "");
                 search.addResult(new Result(href, bookName, author, type));
             }

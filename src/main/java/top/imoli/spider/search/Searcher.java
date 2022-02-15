@@ -4,7 +4,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import top.imoli.spider.entity.Result;
 import top.imoli.spider.entity.Search;
-import top.imoli.spider.util.URLUtil;
 
 /**
  * @author moli@hulai.com
@@ -14,17 +13,10 @@ public interface Searcher {
 
     void search(Search search);
 
-    default String splitJoint(String baseUrl, String href) {
-        if (href.startsWith("/")) {
-            return URLUtil.format(baseUrl + href);
-        }
-        return href;
-    }
-
-    default void rule0(Search search, Elements select, String baseUrl, SearchType type) {
+    default void rule0(Search search, Elements select, SearchType type) {
         if (select.size() >= 2) {
             Element e0 = select.get(0);
-            String href = splitJoint(baseUrl, e0.select("a").attr("href"));
+            String href = e0.select("a").attr("abs:href");
             String bookName = e0.text();
             search.addResult(new Result(href, bookName, select.get(1).text(), type));
         }

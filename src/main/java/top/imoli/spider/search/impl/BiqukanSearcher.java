@@ -42,7 +42,7 @@ public class BiqukanSearcher extends AbstractSearcher {
             }
             for (Element element : document.select("tbody > tr:not([align])")) {
                 Elements select = element.select(".odd");
-                rule0(search, select, baseUrl, type);
+                rule0(search, select, type);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -51,7 +51,7 @@ public class BiqukanSearcher extends AbstractSearcher {
 
     private boolean pre(Document document, Search search) {
         try {
-            String href = Objects.requireNonNull(document.selectFirst("link")).attr("href");
+            String href = Objects.requireNonNull(document.selectFirst("link")).attr("abs:href");
             Parser parser = ParserType.getParser(href);
             String bookName;
             String author;
@@ -62,7 +62,7 @@ public class BiqukanSearcher extends AbstractSearcher {
                 author = Objects.requireNonNull(document.selectFirst("#info > p > a")).text();
                 bookName = Objects.requireNonNull(document.selectFirst("#info > h1")).text();
             }
-            search.addResult(new Result(splitJoint(href), bookName, author, type));
+            search.addResult(new Result(href, bookName, author, type));
             return true;
         } catch (Exception ignored) {
         }

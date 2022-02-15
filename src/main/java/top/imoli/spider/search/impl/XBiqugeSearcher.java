@@ -4,7 +4,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import top.imoli.spider.entity.Result;
 import top.imoli.spider.entity.Search;
 import top.imoli.spider.search.AbstractSearcher;
 import top.imoli.spider.search.SearchType;
@@ -29,7 +28,7 @@ public class XBiqugeSearcher extends AbstractSearcher {
             Document document = TryObtain.tryPost(Jsoup.connect(path).data("searchkey", search.getKeyWord()));
             for (Element element : document.select("tbody > tr:not([align])")) {
                 Elements select = element.select(".even");
-                rule0(search, select, baseUrl, type);
+                rule0(search, select, type);
             }
         } catch (Exception e) {
             e.printStackTrace();

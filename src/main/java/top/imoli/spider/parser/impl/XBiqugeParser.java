@@ -15,10 +15,6 @@ import java.util.Objects;
  */
 public class XBiqugeParser extends AbstractParser {
 
-    public XBiqugeParser(String baseUrl) {
-        super(baseUrl);
-    }
-
     @Override
     public String nameParser(Document doc) {
         return Objects.requireNonNull(doc.selectFirst("#info > h1")).text();

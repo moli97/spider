@@ -15,11 +15,6 @@ import java.util.Objects;
  */
 public class Bige7Parser extends AbstractParser {
 
-
-    public Bige7Parser(String baseUrl) {
-        super(baseUrl);
-    }
-
     @Override
     public String nameParser(Document doc) {
         return Objects.requireNonNull(doc.selectFirst(".info > h1")).text();
