@@ -41,6 +41,16 @@ public class RuleNode {
         return Objects.nonNull(next);
     }
 
+    public <T, R> R applyAll(T t){
+        RuleNode x = this;
+        Object apply = t;
+        while (x != null) {
+            apply = x.apply(apply);
+            x = x.getNext();
+        }
+        return (R) apply;
+    }
+
     public static String join(Object... objects) {
         StringBuilder builder = new StringBuilder();
         for (Object o : objects) {
@@ -93,7 +103,7 @@ public class RuleNode {
         Rule newRule(RuleExpr expr);
     }
 
-    enum RuleType {
+    public enum RuleType {
         NONE(0, expr -> o -> o),
         ELEMENT_SELECT_FIRST(1, expr -> e -> ((Element) e).selectFirst(expr.getArg0())),
         ELEMENT_TO_TEXT(2, expr -> e -> ((Element) e).text()),
@@ -105,6 +115,7 @@ public class RuleNode {
             }
             return ReflectUtil.invoke(o, (ReflectRuleExpr) expr);
         }),
+        ELEMENT_SELECT(6, expr -> e -> ((Element) e).select(expr.getArg0())),
 
         ;
         public final int code;
@@ -126,7 +137,7 @@ public class RuleNode {
 
     }
 
-    static class RuleExpr {
+    public static class RuleExpr {
         protected int type;
         protected String[] args;
 
