@@ -1,4 +1,4 @@
-package top.imoli.spider.rule;
+package top.imoli.spider.util;
 
 import java.lang.reflect.*;
 import java.util.HashMap;

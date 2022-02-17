@@ -1,6 +1,7 @@
-package top.imoli.spider.rule;
+package top.imoli.spider.util;
 
-import top.imoli.spider.rule.entity.RuleNode.ReflectRuleExpr;
+import org.apache.commons.lang3.reflect.MethodUtils;
+import top.imoli.spider.exception.ParserException;
 
 import java.lang.reflect.Method;
 
@@ -10,17 +11,7 @@ import java.lang.reflect.Method;
  */
 public class ReflectUtil {
 
-    public static void main(String[] args) throws Exception {
-        Object invoke = invoke("mo__li", "replace", new String[]{"java.lang.CharSequence", "java.lang.CharSequence"}, new String[]{"__", "_"});
-        System.out.println(invoke);
-    }
-
-    public static void test0() throws Exception {
-        Class<?> clazz = getClass("java.lang.String");
-        Method method = clazz.getMethod("replace", getClass("java.lang.CharSequence"), getClass("java.lang.CharSequence"));
-        String text = "mo__li";
-        Object invoke = method.invoke(text, "__", "_");
-        System.out.println(invoke);
+    private ReflectUtil() {
     }
 
     public static Object invoke(Object o, String methodMame, String[] parameterTypes, Object... args) {
@@ -35,10 +26,6 @@ public class ReflectUtil {
             e.printStackTrace();
         }
         return o;
-    }
-
-    public static Object invoke(Object o, ReflectRuleExpr expr) {
-        return invoke(o, expr.getMethodMame(), expr.getTypes(), expr.getArgs());
     }
 
     public static Class getClass(String className) {
@@ -65,5 +52,18 @@ public class ReflectUtil {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("");
         }
+    }
+
+    public static Object invoke(Object object, String methodName, Object... args) {
+        try {
+            return MethodUtils.invokeMethod(object, methodName, args);
+        } catch (Exception e) {
+            throw new ParserException(e);
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        Object invoke = invoke("mo__li", "replace", new String[]{"java.lang.CharSequence", "java.lang.CharSequence"}, new String[]{"__", "_"});
+        System.out.println(invoke);
     }
 }
